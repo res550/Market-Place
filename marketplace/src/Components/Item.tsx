@@ -8,7 +8,7 @@ export default class Item extends React.Component<{}>{
     public render(){
         return(
             <div>
-                Hello
+                Hello there
             </div>
         )
     }

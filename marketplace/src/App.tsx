@@ -1,6 +1,8 @@
 import * as React from 'react';
 import './App.css';
-import Facebook  from './Components/Facebook'
+import Facebook  from './Components/Facebook';
+import Modal from 'react-responsive-modal';
+import Header from './Components/Header';
 
 interface IState{
   loggedIn:boolean,
@@ -30,13 +32,19 @@ class App extends React.Component<{},IState>{
       this.launchScreen=this.launchScreen.bind(this)
   }
   
+  public createClicked = () => {
+    this.setState({
+      createmode:true,
+    })
+  }
+
   public checkState=() => {
     if(this.state.createmode){
         return(<div>{this.createView()}</div>)
-    }else if (this.state.deletemode) {
-        return(this.deleteView())
-    } else if(this.state.editmode){
-        return(this.editView())
+    // }else if (this.state.deletemode) {
+    //     return(this.deleteView())
+    // } else if(this.state.editmode){
+    //     return(this.editView())
     }else{
         return(this.normalView())
     }
@@ -80,7 +88,20 @@ class App extends React.Component<{},IState>{
   }
 
   private createView(){
-    return(<)
+    const open = this.state.createmode;
+    return(<Modal open={open} onClose = {this.onCloseModal}>
+      <form>
+
+      </form>
+    </Modal>)
+  }
+
+	private onCloseModal = () => {
+		this.setState({ createmode: false });
+  };
+  
+  private normalView() {
+    return(<Header name={this.state.name}  imageurl={this.state.picture}  createClicked={this.createClicked}/>)
   }
 }
 

@@ -80,8 +80,7 @@ class App extends React.Component<{},IState>{
   }
 
   private createView(){
-    return(<div>
-    </div>)
+    return(<)
   }
 }
 

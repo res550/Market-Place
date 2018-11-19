@@ -1,8 +1,8 @@
 .profileImage{
   width: 42px;
   height: 42px;
-  padding-top: 4px;
-  padding-left: 4px;
+  padding-top: 6px;
+  padding-left: 6px;
   border-radius: 25px;
   display: inline-block;
 }
@@ -12,4 +12,12 @@
   display: inline-block;
   margin-right: 10px;
   margin-left: 15px;
+}
+
+.toggleButton{
+  height: 50px;
+}
+
+.checked{
+  margin-top:0;
 }

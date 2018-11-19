@@ -13,6 +13,7 @@ interface IState{
   createmode:boolean,
   editmode:boolean,
   deletemode:boolean,
+  userOnly:boolean,
 }
 class App extends React.Component<{},IState>{
   
@@ -27,8 +28,8 @@ class App extends React.Component<{},IState>{
         createmode:false,
         editmode:false,
         deletemode:false,
+        userOnly:false,
       }
-      this.showAll=this.showAll.bind(this);
       this.launchScreen=this.launchScreen.bind(this)
   }
   
@@ -36,6 +37,32 @@ class App extends React.Component<{},IState>{
     this.setState({
       createmode:true,
     })
+    console.log("create")
+  }
+
+  public deleteClicked = () => {
+    this.setState({
+      deletemode:true
+    })
+    console.log("delete")
+  }
+
+  public editClicked= () =>{
+    this.setState({
+      editmode:true,
+    })
+    console.log("edit")
+  }
+
+  public userOnlyFunc=()=>{
+    if(this.state.userOnly==false){
+      this.setState({userOnly:true})
+      return true
+    }
+    else{
+      this.setState({userOnly:false})
+      return false
+    }
   }
 
   public checkState=() => {
@@ -82,11 +109,6 @@ class App extends React.Component<{},IState>{
       return(<div className="container-fluid">{this.checkState()}</div>)
     }
   }
-
-  private showAll(){
-      return(<h1>Hello</h1>)
-  }
-
   private createView(){
     const open = this.state.createmode;
     return(<Modal open={open} onClose = {this.onCloseModal}>
@@ -101,7 +123,8 @@ class App extends React.Component<{},IState>{
   };
   
   private normalView() {
-    return(<Header name={this.state.name}  imageurl={this.state.picture}  createClicked={this.createClicked}/>)
+    return(<Header name={this.state.name}  imageurl={this.state.picture}  createClicked={this.createClicked} 
+      userOnly={this.state.userOnly} editClicked={this.editClicked} deleteClicked={this.deleteClicked} userOnlyFunc={this.userOnlyFunc}/>)
   }
 }
 

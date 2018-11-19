@@ -1,13 +1,52 @@
 import * as React from 'react';
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import { Navbar, Nav, NavItem} from 'react-bootstrap';
+import Screenshot from './Screenshot_1.png'
+import Checkbox from '@material-ui/core/Checkbox'
 
 interface IProps {
     name: any,
     imageurl: any,
     createClicked: any,
+    deleteClicked:any,
+    editClicked:any,
+    userOnly:any,
+    userOnlyFunc:any,
 }
 
-export default class Header extends React.Component<IProps>{
+interface IState{
+    current:boolean,
+}
+export default class Header extends React.Component<IProps,IState>{
+
+    constructor(props:any){
+        super(props)
+        this.state={
+            current:true,
+        }
+        console.log(this.state.current)
+    }
+
+    componentDidMount(){
+        this.setState({
+            current:this.props.userOnly
+        })
+        console.log("mount")
+    }
+    public handleClick = () => {
+        console.log("handling click")
+        if(this.state.current===false){
+            this.setState({
+                current:true,
+            })
+        }
+        else{
+            this.setState({
+                current:false,
+            })
+        }
+        console.log(this.state.current)
+        this.props.userOnlyFunc()
+    }
 
     public createClicked = () => {
         this.props.createClicked()
@@ -19,25 +58,24 @@ export default class Header extends React.Component<IProps>{
                 <Navbar inverse fluid>
                     <Navbar.Header>
                         <Navbar.Brand>
-                            <a href="#brand">React-Bootstrap</a>
+                            <img src={Screenshot} className="BrandImage" alt=""/>
                         </Navbar.Brand>
                         <Navbar.Toggle />
                     </Navbar.Header>
                     <Navbar.Collapse>
                         <Nav>
-                            <NavItem eventKey={1} href="#">
-                                Link
+                            <NavItem eventKey={1} href="" onClick={this.props.createClicked}>
+                                Create Listing
                             </NavItem>
-                            <NavItem eventKey={2} href="#">
-                                Link
+                            <NavItem eventKey={2} href="" onClick={this.props.editClicked}>
+                                Edit Listing
                             </NavItem>
-                            <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
-                                <MenuItem eventKey={3.1}>Create Listing</MenuItem>
-                                <MenuItem eventKey={3.2}>Delete Listing</MenuItem>
-                                <MenuItem eventKey={3.3}>Edit Listing</MenuItem>
-                                <MenuItem divider />
-                                <MenuItem eventKey={3.3}>Separated link</MenuItem>
-                            </NavDropdown>
+                            <NavItem onClick={this.props.deleteClicked}>
+                                Delete Listing
+                            </NavItem>
+                            <NavItem className="toggleButton">
+                            <Checkbox className="checked" checked={this.state.current} onClick={this.handleClick}> My Listings </Checkbox>
+                            </NavItem>
                         </Nav>
                         <Nav pullRight>
                             <div>

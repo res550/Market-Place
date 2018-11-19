@@ -30,15 +30,15 @@ class App extends React.Component<{},IState>{
       this.launchScreen=this.launchScreen.bind(this)
   }
   
-  public checkState(){
+  public checkState=() => {
     if(this.state.createmode){
         return(<div>{this.createView()}</div>)
     }else if (this.state.deletemode) {
-      
+        return(this.deleteView())
     } else if(this.state.editmode){
-
+        return(this.editView())
     }else{
-      
+        return(this.normalView())
     }
   }
 
@@ -77,6 +77,11 @@ class App extends React.Component<{},IState>{
 
   private showAll(){
       return(<h1>Hello</h1>)
+  }
+
+  private createView(){
+    return(<div>
+    </div>)
   }
 }
 

@@ -3,6 +3,7 @@ import './App.css';
 import Facebook  from './Components/Facebook';
 import Modal from 'react-responsive-modal';
 import Header from './Components/Header';
+import Item from './Components/Item'
 
 interface IState{
   loggedIn:boolean,
@@ -123,8 +124,18 @@ class App extends React.Component<{},IState>{
   };
   
   private normalView() {
-    return(<Header name={this.state.name}  imageurl={this.state.picture}  createClicked={this.createClicked} 
-      userOnly={this.state.userOnly} editClicked={this.editClicked} deleteClicked={this.deleteClicked} userOnlyFunc={this.userOnlyFunc}/>)
+    return(
+    <div>
+    <Header name={this.state.name}  imageurl={this.state.picture}  createClicked={this.createClicked} userOnly={this.state.userOnly} editClicked={this.editClicked} deleteClicked={this.deleteClicked} userOnlyFunc={this.userOnlyFunc}/>
+    <Item obj={{url:this.state.picture}}/>
+    <Item obj={{url:this.state.picture}}/>
+    <Item obj={{url:this.state.picture}}/>
+    <Item obj={{url:this.state.picture}}/>
+    <Item obj={{url:this.state.picture}}/>
+    <Item obj={{url:this.state.picture}}/>
+    <Item obj={{url:this.state.picture}}/>
+    </div>     
+    )
   }
 }
 

@@ -1,4 +1,4 @@
-.profileImage{
+.profileImage {
   width: 42px;
   height: 42px;
   padding-top: 6px;
@@ -7,21 +7,52 @@
   display: inline-block;
 }
 
-.Name{
+.Name {
   white-space: nowrap;
   display: inline-block;
   margin-right: 10px;
   margin-left: 15px;
 }
 
-.toggleButton{
+.toggleButton {
   height: 50px;
 }
 
-.checked{
-  margin-top:0;
+.checked {
+  margin-top: 0;
 }
 
-.Card{
+.Card {
   margin: 10px;
+}
+.centered{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.fbButton {
+  margin: 0 auto;
+}
+
+.login{
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    border-radius: 100px;
+}
+
+.JbHead{
+  padding-bottom: 20px;
+}
+
+.JbRound{
+  border-radius: 20px;
+}
+
+body{
+  height: 100%;
 }

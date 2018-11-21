@@ -1,47 +1,47 @@
 import * as React from 'react';
-import { Navbar, Nav, NavItem} from 'react-bootstrap';
-import Screenshot from './Screenshot_1.png'
+import { Navbar, Nav, NavItem } from 'react-bootstrap';
+import Screenshot from './LogoMakr_9MVTxW.png'
 import Checkbox from '@material-ui/core/Checkbox'
 
 interface IProps {
     name: any,
     imageurl: any,
     createClicked: any,
-    deleteClicked:any,
-    editClicked:any,
-    userOnly:any,
-    userOnlyFunc:any,
+    deleteClicked: any,
+    editClicked: any,
+    userOnly: any,
+    userOnlyFunc: any,
 }
 
-interface IState{
-    current:boolean,
+interface IState {
+    current: boolean,
 }
-export default class Header extends React.Component<IProps,IState>{
+export default class Header extends React.Component<IProps, IState>{
 
-    constructor(props:any){
+    constructor(props: any) {
         super(props)
-        this.state={
-            current:true,
+        this.state = {
+            current: true,
         }
         console.log(this.state.current)
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.setState({
-            current:this.props.userOnly
+            current: this.props.userOnly
         })
         console.log("mount")
     }
     public handleClick = () => {
         console.log("handling click")
-        if(this.state.current===false){
+        if (this.state.current === false) {
             this.setState({
-                current:true,
+                current: true,
             })
         }
-        else{
+        else {
             this.setState({
-                current:false,
+                current: false,
             })
         }
         console.log(this.state.current)
@@ -58,7 +58,7 @@ export default class Header extends React.Component<IProps,IState>{
                 <Navbar inverse fluid>
                     <Navbar.Header>
                         <Navbar.Brand>
-                            <img src={Screenshot} className="BrandImage" alt=""/>
+                            <img src={Screenshot} className="BrandImage" alt="" />
                         </Navbar.Brand>
                         <Navbar.Toggle />
                     </Navbar.Header>
@@ -74,7 +74,7 @@ export default class Header extends React.Component<IProps,IState>{
                                 Delete Listing
                             </NavItem>
                             <NavItem className="toggleButton">
-                            <Checkbox className="checked" checked={this.state.current} onClick={this.handleClick}> My Listings </Checkbox>
+                                <Checkbox className="checked" checked={this.state.current} onClick={this.handleClick}> My Listings </Checkbox>
                             </NavItem>
                         </Nav>
                         <Nav pullRight>

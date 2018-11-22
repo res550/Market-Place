@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import Modal from 'react-responsive-modal'
 import { Col } from 'react-bootstrap';
+import { CardActionArea } from '@material-ui/core';
 
 
 const styles = {
@@ -59,6 +60,7 @@ class MarketItem extends React.Component<HeaderInfoProps, IState> {
       <div>
         <Col lg={3} md={4} sm={6} xs={12}>
           <Card className={this.props.classes.card} raised={true}>
+           <CardActionArea className={this.props.classes.focusHighlight}>
             <CardMedia
               component="img"
               className={this.props.classes.media}
@@ -72,8 +74,8 @@ class MarketItem extends React.Component<HeaderInfoProps, IState> {
               <Typography component="p">
                 {this.props.obj.description}
               </Typography>
-              <Typography component='p'>
-                Seller Info: email: {this.props.obj.email} , Name: {this.props.obj.Seller}
+              <Typography gutterBottom variant="h5" component="h1">
+               <br/> Contact email: {this.props.obj.email} <br/>Name: {this.props.obj.seller}
               </Typography>
             </CardContent>
             <CardActions>
@@ -81,6 +83,7 @@ class MarketItem extends React.Component<HeaderInfoProps, IState> {
                 Learn More
           </Button>
             </CardActions>
+            </CardActionArea>
           </Card>
         </Col>
         <Modal open={this.state.open} onClose={this.onCloseModal}>

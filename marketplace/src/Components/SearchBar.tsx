@@ -79,7 +79,7 @@ class SearchBar extends React.Component<HeaderInfoProps, IState>{
         
         if ( searchQuery.trim().length >=1) {
             console.log(searchQuery)
-            const url = "https://marketplaceapi.azurewebsites.net/api/Listing/search/title/" + searchQuery
+            const url = "https://marketplaceapi.azurewebsites.net/api/Listing/search/title/"+searchQuery
             console.log(url)
             fetch(
                 url, {
@@ -88,9 +88,8 @@ class SearchBar extends React.Component<HeaderInfoProps, IState>{
                 .then(response => response.json())
                 .then(json => {
                     console.log(json)
-                    this.setState({ response: json })
+                    this.props.changeSearch(json)
                 })
-            this.props.changeSearch(this.state.response)
         }else{
             this.props.searchOff()
         }

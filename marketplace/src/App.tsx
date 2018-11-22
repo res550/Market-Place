@@ -5,7 +5,7 @@ import Facebook from './Components/Facebook';
 import SearchBar from './Components/SearchBar'
 import Header from './Components/Header';
 import Item from './Components/Item';
-
+import Modal from 'react-responsive-modal'
 
 interface IState {
   loggedIn: boolean,
@@ -17,16 +17,17 @@ interface IState {
   editmode: boolean,
   deletemode: boolean,
   userOnly: boolean,
-  allResponse: any,
+  allResponse: any[],
   isSearchTitle:any,
   isSearchUser:any,
+  uploadimage:any,
 }
 class App extends React.Component<{}, IState>{
 
   constructor(props: any) {
     super(props);
     this.state = {
-      allResponse: "",
+      allResponse: [],
       loggedIn: false,
       name: "",
       picture: "",
@@ -38,14 +39,23 @@ class App extends React.Component<{}, IState>{
       userOnly: false,
       isSearchTitle:false,
       isSearchUser:false,
+      uploadimage: null,
     }
     this.launchScreen = this.launchScreen.bind(this)
     this.generateAllListing = this.generateAllListing.bind(this)
     this.normalView=this.normalView.bind(this)
+    this.createModal=this.createModal.bind(this)
+    this.editModal=this.editModal.bind(this)
+    this.onCreateClose=this.onCreateClose.bind(this)
+    this.handleFileUpload=this.handleFileUpload.bind(this)
+    this.uploadListing=this.uploadListing.bind(this)
+    this.setDisplayListing=this.setDisplayListing.bind(this)
+    this.searchoff=this.searchoff.bind(this)
   }
 
   public setDisplayListing = (json:any) => {
-    this.setState({allResponse:json,
+    this.setState({
+    allResponse:json,
     isSearchTitle:true})
   }
 
@@ -57,21 +67,18 @@ class App extends React.Component<{}, IState>{
     this.setState({
       createmode: true,
     })
-    console.log("create")
   }
 
   public deleteClicked = () => {
     this.setState({
       deletemode: true
     })
-    console.log("delete")
   }
 
   public editClicked = () => {
     this.setState({
       editmode: true,
     })
-    console.log("edit")
   }
 
   public userOnlyFunc = () => {
@@ -87,7 +94,6 @@ class App extends React.Component<{}, IState>{
 
   public setUserData = (response: any) => {
     if ("status" in response) {
-      console.log("we did it")
     }
     else {
       this.setState({
@@ -97,7 +103,6 @@ class App extends React.Component<{}, IState>{
         email: response.email,
         id: response.id
       })
-      console.log(response.name)
     }
   }
 
@@ -133,6 +138,86 @@ class App extends React.Component<{}, IState>{
     this.setState({ createmode: false });
   };*/
 
+  private createModal() {
+    return(
+    <Modal open={this.state.createmode} onClose={this.onCreateClose}>
+    <form>
+      <div className="form-group">
+        <label>Listing Title</label>
+        <input type="text" className="form-control" id="Title" placeholder="Enter Title" />
+        <small className="form-text text-muted">You can edit any meme later</small>
+      </div>
+      <div className="form-group">
+        <label></label>
+        <input type="text" className="form-control" id="Description" placeholder="Enter Tag" />
+        <big className="form-text text-muted">Tag is used for search</big>
+      </div>
+      <div className="form-group">
+        <label>Image</label>
+        <input type="file" onChange={this.handleFileUpload} className="form-control-file" accept="image/*" id="meme-image-input" />
+      </div>
+      <div className="form-group"> 
+        <label>Price</label>
+        <input type="number" min="0" className="form-control" id="Price" placeholder="Enter a price"/>
+        <small className="form-text text-muted">How much you want to sell for homie</small>
+      </div>
+
+      <button type="button" className="btn" onClick={this.uploadListing}>Upload</button>
+    </form>
+  </Modal>)
+  }
+  public onCreateClose = () =>{
+    this.setState({createmode:false})
+  }
+
+  private handleFileUpload=(fileList: any)=> {
+		this.setState({
+			uploadimage:fileList.target.files
+    })
+  }
+
+	private uploadListing() {
+    const titleInput = document.getElementById("Title") as HTMLInputElement
+    const descriptionInput = document.getElementById("Description") as HTMLInputElement
+    const priceInput = document.getElementById("Price") as HTMLInputElement
+    let image=this.state.uploadimage[0]
+
+		if (titleInput === null || descriptionInput === null || image === null || priceInput === null) {
+			return;
+		}
+
+    const price= priceInput.value
+		const title = titleInput.value
+		const description= descriptionInput.value
+		const url = "https://marketplaceapi.azurewebsites.net/api/Listing/upload"
+
+		const formData = new FormData()
+    formData.append("Title", title)
+    formData.append("Price",price)
+		formData.append("Description", description)
+    formData.append("Image", image)
+    formData.append("userID",this.state.id)
+    formData.append("email",this.state.email)
+    formData.append("Seller",this.state.name)
+
+		fetch(url, {
+			body: formData,
+			method: 'POST'
+		})
+        .then((response : any) => {
+			if (!response.ok) {
+				// Error State
+				alert(response.statusText)
+			} else {
+				this.setState({createmode:false})
+			}
+		  })
+	}
+  
+  private editModal(){
+
+  }
+
   private normalView() {
     return (
       <div>
@@ -140,6 +225,8 @@ class App extends React.Component<{}, IState>{
                 editClicked={this.editClicked} deleteClicked={this.deleteClicked} userOnlyFunc={this.userOnlyFunc} />
         <SearchBar changeSearch={this.setDisplayListing} searchOff={this.searchoff}/>
         {this.generateAllListing()}
+        {this.createModal()}
+        {this.editModal()}
       </div>
     )
   }
@@ -149,22 +236,24 @@ class App extends React.Component<{}, IState>{
     fetch(
       url, {
         method: 'GET'
+        
       })
       .then(response => response.json())
       .then(json => {
         this.setState({ allResponse: json });
       })
-    return this.makeItems();
     }
+    return this.makeItems();
   }
   public makeItems(): any {
-    if (this.state.allResponse == "") {
+    if (this.state.allResponse === []) {
       return
     }
     else {
       let toReturn: any[] = []
-      this.state.allResponse.forEach((i: any) => {
-        toReturn.push(<Item obj={i} />)
+      console.log(this.state.allResponse)
+      this.state.allResponse.forEach(i => {
+        toReturn.push(<Item obj={i}/>)
       });
       return toReturn
     };

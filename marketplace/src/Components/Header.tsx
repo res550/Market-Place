@@ -73,8 +73,9 @@ export default class Header extends React.Component<IProps, IState>{
                             <NavItem onClick={this.props.deleteClicked}>
                                 Delete Listing
                             </NavItem>
-                            <NavItem className="toggleButton">
-                                <Checkbox className="checked" checked={this.state.current} onClick={this.handleClick}> My Listings </Checkbox>
+                            <NavItem className="toggleButton" style={{height:20}}>
+                                My Listings
+                                <Checkbox style={{paddingTop:0,color:'white'}}className="checked" checked={this.state.current} onClick={this.handleClick}> My Listings </Checkbox>
                             </NavItem>
                         </Nav>
                         <Nav pullRight>

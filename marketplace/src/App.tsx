@@ -2,10 +2,10 @@ import * as React from 'react';
 import { Jumbotron, Col } from 'react-bootstrap'
 import './App.css';
 import Facebook from './Components/Facebook';
-import Modal from 'react-responsive-modal';
+import SearchBar from './Components/SearchBar'
 import Header from './Components/Header';
 import Item from './Components/Item';
-//import Item from './Components/Item'
+
 
 interface IState {
   loggedIn: boolean,
@@ -18,6 +18,8 @@ interface IState {
   deletemode: boolean,
   userOnly: boolean,
   allResponse: any,
+  isSearchTitle:any,
+  isSearchUser:any,
 }
 class App extends React.Component<{}, IState>{
 
@@ -34,9 +36,21 @@ class App extends React.Component<{}, IState>{
       editmode: false,
       deletemode: false,
       userOnly: false,
+      isSearchTitle:false,
+      isSearchUser:false,
     }
     this.launchScreen = this.launchScreen.bind(this)
-    this.generateListing = this.generateListing.bind(this)
+    this.generateAllListing = this.generateAllListing.bind(this)
+    this.normalView=this.normalView.bind(this)
+  }
+
+  public setDisplayListing = (json:any) => {
+    this.setState({allResponse:json,
+    isSearchTitle:true})
+  }
+
+  public searchoff = () => {
+    this.setState({isSearchTitle:false})
   }
 
   public createClicked = () => {
@@ -71,18 +85,6 @@ class App extends React.Component<{}, IState>{
     }
   }
 
-  public checkState = () => {
-    if (this.state.createmode) {
-      return (<div>{this.createView()}</div>)
-      // }else if (this.state.deletemode) {
-      //     return(this.deleteView())
-      // } else if(this.state.editmode){
-      //     return(this.editView())
-    } else {
-      return (this.normalView())
-    }
-  }
-
   public setUserData = (response: any) => {
     if ("status" in response) {
       console.log("we did it")
@@ -100,15 +102,17 @@ class App extends React.Component<{}, IState>{
   }
 
   public render() {
-    return (
-      <div style={{height:'100%'}}>
-        {this.launchScreen()}
-      </div>
-    );
+    if(this.state.loggedIn == false){
+      return(<div style={{height:'100%'}}>
+      {(this.launchScreen())}
+      </div>)
+    }
+    else{
+      return(<div>{this.normalView()}</div>)
+    }
   }
 
   private launchScreen() {
-    if (this.state.loggedIn == false) {
       return (
         <div className="centered">
         <Jumbotron className="JbRound" style={{textAlign:'center',padding:'20px'}}>
@@ -123,33 +127,24 @@ class App extends React.Component<{}, IState>{
           </div>
         </Jumbotron>
         </div>)
-    }
-    else {
-      return (<div>{this.checkState()}</div>)
-    }
-  }
-  private createView() {
-    const open = this.state.createmode;
-    return (<Modal open={open} onClose={this.onCloseModal}>
-      <form>
-
-      </form>
-    </Modal>)
   }
 
-  private onCloseModal = () => {
+/*   private onCloseModal = () => {
     this.setState({ createmode: false });
-  };
+  };*/
 
   private normalView() {
     return (
       <div>
-        <Header name={this.state.name} imageurl={this.state.picture} createClicked={this.createClicked} userOnly={this.state.userOnly} editClicked={this.editClicked} deleteClicked={this.deleteClicked} userOnlyFunc={this.userOnlyFunc} />
-        {this.generateListing()}
+        <Header name={this.state.name} imageurl={this.state.picture} createClicked={this.createClicked} userOnly={this.state.userOnly} 
+                editClicked={this.editClicked} deleteClicked={this.deleteClicked} userOnlyFunc={this.userOnlyFunc} />
+        <SearchBar changeSearch={this.setDisplayListing} searchOff={this.searchoff}/>
+        {this.generateAllListing()}
       </div>
     )
   }
-  private generateListing() {
+  private generateAllListing() {
+    if(!this.state.isSearchTitle && !this.state.isSearchUser){
     const url = "https://marketplaceapi.azurewebsites.net/api/Listing"
     fetch(
       url, {
@@ -159,7 +154,10 @@ class App extends React.Component<{}, IState>{
       .then(json => {
         this.setState({ allResponse: json });
       })
-    console.log(this.state.allResponse)
+    return this.makeItems();
+    }
+  }
+  public makeItems(): any {
     if (this.state.allResponse == "") {
       return
     }
@@ -168,9 +166,8 @@ class App extends React.Component<{}, IState>{
       this.state.allResponse.forEach((i: any) => {
         toReturn.push(<Item obj={i} />)
       });
-      console.log(toReturn)
       return toReturn
-    }
+    };
   }
 }
 

@@ -9,3 +9,24 @@ body {
 .kep-login-facebook.metro{
   border-radius: 10px !important;
 }
+#outlined-full-width{
+  font-size: 15px !important;
+  background-color: white;
+}
+
+.MuiPrivateNotchedOutline-root-37{
+   border-radius: 50px !important;
+}
+
+.MuiPrivateNotchedOutline-root-65{
+  border-radius: 50px !important;
+  margin-left: 20px
+}
+
+.marginNormal-32 {
+  margin-top: 5px !important;
+}
+
+.MuiFormControl-marginNormal-32{
+  margin-top: 5px !important;
+}

@@ -7,8 +7,6 @@ interface IProps {
     name: any,
     imageurl: any,
     createClicked: any,
-    deleteClicked: any,
-    editClicked: any,
     userOnly: any,
     userOnlyFunc: any,
 }
@@ -38,14 +36,15 @@ export default class Header extends React.Component<IProps, IState>{
             this.setState({
                 current: true,
             })
+            this.props.userOnlyFunc()
         }
         else {
             this.setState({
                 current: false,
             })
+            this.props.userOnlyFunc()
         }
         console.log(this.state.current)
-        this.props.userOnlyFunc()
     }
 
     public createClicked = () => {
@@ -67,15 +66,9 @@ export default class Header extends React.Component<IProps, IState>{
                             <NavItem eventKey={1} href="" onClick={this.props.createClicked}>
                                 Create Listing
                             </NavItem>
-                            <NavItem eventKey={2} href="" onClick={this.props.editClicked}>
-                                Edit Listing
-                            </NavItem>
-                            <NavItem onClick={this.props.deleteClicked}>
-                                Delete Listing
-                            </NavItem>
-                            <NavItem className="toggleButton" style={{height:20}}>
+                            <NavItem className="toggleButton" style={{display:'flex', alignItems:'center'}}>
                                 My Listings
-                                <Checkbox style={{paddingTop:0,color:'white'}}className="checked" checked={this.state.current} onClick={this.handleClick}> My Listings </Checkbox>
+                                <Checkbox style={{alignItems:'center',color:'white'}}className="checked" checked={this.state.current} onClick={this.handleClick}> My Listings </Checkbox>
                             </NavItem>
                         </Nav>
                         <Nav pullRight>

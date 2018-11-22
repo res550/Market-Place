@@ -1,10 +1,11 @@
 import * as React from 'react';
 import MediaStreamRecorder from 'msr';
-import { TextField } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles';
+import { TextField, Button } from '@material-ui/core'
+import { withStyles, MuiThemeProvider, createMuiTheme }from '@material-ui/core/styles';
 import { Mic } from '@material-ui/icons'
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import orange from '@material-ui/core/colors/orange'
 
 const styles = {
     dense: {
@@ -22,13 +23,23 @@ interface IHeaderInfoStyles {
 
 interface IProps {
     changeSearch: any,
-    searchOff:any,
+    searchOff: any,
 }
 
 interface IState {
     disabled: boolean,
     response: any,
 }
+
+const theme = createMuiTheme({
+    palette: {
+      primary: orange,
+    },
+    typography: {
+      useNextVariants: true,
+    },
+  });
+  
 
 type HeaderInfoProps = IHeaderInfoStyles & IProps;
 
@@ -59,16 +70,19 @@ class SearchBar extends React.Component<HeaderInfoProps, IState>{
                             </InputAdornment>
                         ),
                     }}
-                    fullWidth
-                    style={{ marginBottom: 8 }}
+                    style={{ marginBottom: 8, width: '70%' , height:'40px'}}
                     placeholder="Search By Title"
                     margin="normal"
                     variant="outlined"
-                    onChange={this.makeRequest}
                     InputLabelProps={{
                         shrink: true,
                     }}
                 />
+                <MuiThemeProvider theme={theme}>
+                    <Button variant="contained" color="primary" className={this.props.classes.margin} style={{borderRadius:'20px', width:'15%',height:'40px',marginTop:'5px',marginLeft:'15px'}} onClick={this.makeRequest}>
+                        Search
+                    </Button>
+                </MuiThemeProvider>
             </div>
         )
     }
@@ -76,22 +90,12 @@ class SearchBar extends React.Component<HeaderInfoProps, IState>{
     private makeRequest() {
         const TextField = document.getElementById("outlined-full-width") as HTMLInputElement
         let searchQuery: string = TextField.value
-        
-        if ( searchQuery.trim().length >=1) {
-            console.log(searchQuery)
-            const url = "https://marketplaceapi.azurewebsites.net/api/Listing/search/title/"+searchQuery
-            console.log(url)
-            fetch(
-                url, {
-                    method: 'GET'
-                })
-                .then(response => response.json())
-                .then(json => {
-                    console.log(json)
-                    this.props.changeSearch(json)
-                })
-        }else{
+        console.log(searchQuery)
+        if (searchQuery.trim() === "") {
             this.props.searchOff()
+        }
+        else {
+            this.props.changeSearch(searchQuery)
         }
     }
 

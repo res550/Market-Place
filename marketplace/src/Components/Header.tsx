@@ -54,26 +54,26 @@ export default class Header extends React.Component<IProps, IState>{
     public render() {
         return (
             <div>
-                <Navbar inverse fluid>
+                <Navbar fixedTop inverse fluid>
                     <Navbar.Header>
-                        <Navbar.Brand>
+                        <Navbar.Brand style={{padding:'10px'}}>
                             <img src={Screenshot} className="BrandImage" alt="" />
                         </Navbar.Brand>
                         <Navbar.Toggle />
                     </Navbar.Header>
                     <Navbar.Collapse>
                         <Nav>
-                            <NavItem eventKey={1} href="" onClick={this.props.createClicked}>
+                            <NavItem eventKey={1} href="" style={{color:'orange'}} onClick={this.props.createClicked}>
                                 Create Listing
                             </NavItem>
-                            <NavItem className="toggleButton" style={{display:'flex', alignItems:'center'}}>
+                            <NavItem className="toggleButton" style={{display:'flex', color:'orange', alignItems:'center'}}>
                                 My Listings
-                                <Checkbox style={{alignItems:'center',color:'white'}}className="checked" checked={this.state.current} onClick={this.handleClick}> My Listings </Checkbox>
+                                <Checkbox style={{alignItems:'center',color:'orange'}}className="checked" checked={this.state.current} onClick={this.handleClick}> My Listings </Checkbox>
                             </NavItem>
                         </Nav>
                         <Nav pullRight>
-                            <div>
-                                <Navbar.Text className="Name">
+                            <div style={{paddingRight:"15px"}}>
+                                <Navbar.Text style={{color:'orange'}} className="Name">
                                     {this.props.name}
                                 </Navbar.Text>
                                 <img src={this.props.imageurl} className="profileImage" />

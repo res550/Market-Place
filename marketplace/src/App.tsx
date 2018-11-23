@@ -6,7 +6,92 @@ import SearchBar from './Components/SearchBar'
 import Header from './Components/Header';
 import Item from './Components/Item';
 import Modal from 'react-responsive-modal'
+import Logo from './Components/LogoMakr_9MVTxW.png'
+import ChatBot from 'react-simple-chatbot'
+import { ThemeProvider } from 'styled-components'
+import { MuiThemeProvider, createMuiTheme }from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Speech from '@material-ui/icons/ChatBubble'
+import orange from '@material-ui/core/colors/orange'
 
+const theme = {
+  background: '#ffffff',
+  headerBgColor: '#EF6C00',
+  headerFontColor: '#fff',
+  headerFontSize: '15px',
+  botBubbleColor: '#EF6C00',
+  botFontColor: '#ffffff',
+  userBubbleColor: '#fff',
+  userFontColor: '#4a4a4a',
+};
+
+const themeButton = createMuiTheme({
+  palette: {
+    primary: orange,
+  },
+  typography: {
+    fontSize: 15,
+  },
+})
+
+const steps = [
+  {
+    id: '1',
+    message: 'Thankyou for using this helpbot please contact reshadfc@hotmail.com for any further assistance.',
+    trigger: '10',
+  },
+  {
+    id: '2',
+    options: [
+      { value: 1, label: 'Uploading a listing', trigger: '3' },
+      { value: 2, label: 'Deleting a listing', trigger: '4' },
+      { value: 3, label: 'Editing your listing', trigger: '5' },
+      { value: 4, label: 'Searching listings', trigger: '6' }
+    ],
+  },
+  {
+    id: '3',
+    message: 'To upload a new Listing please click on the create listing button in the navigation bar. This will prompt you to fill out a form which will lead to a listing being posted',
+    trigger: '7',
+  },
+  {
+    id: '4',
+    message: 'To delete a listing please navigate the application to the listing in which you would like to delete then click on the delete button to delete your listing',
+    trigger: '7',
+  },
+  {
+    id: '5',
+    message: 'To edit a listing please navigate the application to the listing in which you would like to edit then click on the edit button to edit your listing. This will pull up a form where you can edit your listing you then need to press update to confirm the listing.',
+    trigger: '7',
+  },
+  {
+    id: '6',
+    message: 'There are 2 options for searching you can first filter to show only your listings or you can search the relevant listings by the title provided. To filter only your listings click the checkbox in the navbar. For search use the search bar at the top of the screen. You can use the microphone icon to activate speech to text if you dont want to type.',
+    trigger: '7',
+  },
+  {
+    id: '7',
+    message: 'Do you need more help',
+    trigger: '8',
+  },
+  {
+    id: '8',
+    options: [
+      { value: 1, label: 'Yes', trigger: '10' },
+      { value: 2, label: 'No', trigger: '9' },
+    ],
+  },
+  {
+    id: '9',
+    message: 'Thankyou for using this helpbot please contact reshadfc@hotmail.com or contact me on LinkedIn at https://www.linkedin.com/in/reshadc/',
+    end: true
+  },
+  {
+    id: '10',
+    message: 'What do you need help with?',
+    trigger: '2',
+  }
+]
 
 interface IState {
   loggedIn: boolean,
@@ -24,6 +109,7 @@ interface IState {
   uploadimage: any,
   search: any,
   selectedObj: any,
+  chatbot: boolean,
 }
 class App extends React.Component<{}, IState>{
 
@@ -44,7 +130,8 @@ class App extends React.Component<{}, IState>{
       isSearchTitle: false,
       isSearchUser: false,
       uploadimage: null,
-      selectedObj: ""
+      selectedObj: "",
+      chatbot: false,
     }
     this.launchScreen = this.launchScreen.bind(this)
     this.generateAllListing = this.generateAllListing.bind(this)
@@ -73,11 +160,15 @@ class App extends React.Component<{}, IState>{
     this.setState({
       search: searchQuery,
       isSearchTitle: true,
+    }, () =>{
+      this.render()
     })
   }
 
   public searchoff = () => {
-    this.setState({ isSearchTitle: false })
+    this.setState({ isSearchTitle: false }, () =>{
+      this.render()
+    })
   }
 
   public createClicked = () => {
@@ -88,10 +179,14 @@ class App extends React.Component<{}, IState>{
 
   public userOnlyFunc = () => {
     if (this.state.isSearchUser === false) {
-      this.setState({ isSearchUser: true })
+      this.setState({ isSearchUser: true }, () =>{
+        this.render()
+      })
     }
     else {
-      this.setState({ isSearchUser: false })
+      this.setState({ isSearchUser: false }, () =>{
+        this.render()
+      })
     }
   }
 
@@ -124,7 +219,7 @@ class App extends React.Component<{}, IState>{
     return (
       <div className="centered">
         <Jumbotron className="JbRound" style={{ textAlign: 'center', padding: '20px' }}>
-          <h1 className="JbHead">Market-Place</h1>
+          <img src={Logo} className="LoginImage" alt="" />
           <p className="JbHead">
             Please Login with facebook to continue
           </p>
@@ -180,6 +275,9 @@ class App extends React.Component<{}, IState>{
   }
 
   private uploadListing() {
+    if(this.state.uploadimage === null){
+      return
+    }
     const titleInput = document.getElementById("Title") as HTMLInputElement
     const descriptionInput = document.getElementById("Description") as HTMLInputElement
     const priceInput = document.getElementById("Price") as HTMLInputElement
@@ -215,7 +313,9 @@ class App extends React.Component<{}, IState>{
           this.setState({ createmode: false })
         }
       })
+      this.setState({uploadimage:[]})
   }
+
   private normalView() {
     return (
       <div>
@@ -224,6 +324,15 @@ class App extends React.Component<{}, IState>{
         <SearchBar changeSearch={this.setDisplayListing} searchOff={this.searchoff} />
         {this.makeItems()}
         {this.createModal()}
+        {(this.state.chatbot)
+          ? <ThemeProvider theme={theme}>
+            <ChatBot handleEnd={() => this.setState({ chatbot: false })} className="chatBot" botDelay={400} steps={steps} />
+          </ThemeProvider> :
+          <MuiThemeProvider theme={themeButton}>
+          <Button id="chatbutton" style={{backgroundColor:'orange'}} variant="fab" onClick={() => this.setState({ chatbot: true })}>
+            <Speech style={{color:'white'}} />
+          </Button>
+          </MuiThemeProvider>}
       </div>
     )
   }

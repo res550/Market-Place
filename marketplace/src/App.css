@@ -56,3 +56,19 @@
 body{
   height: 100%;
 }
+
+.rsc-container.sc-iwsKbI.irIdto{
+  right: 0;
+  bottom: 0;
+  position: fixed;
+  height: 520px !important;
+}
+
+.LoginImage{
+  width: 100%;
+}
+
+.buttonCards{
+  width: 30% !important;
+  height: 40px !important;
+}

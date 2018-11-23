@@ -7,3 +7,8 @@ declare module '*.bmp'
 declare module '*.tiff'
 declare module 'msr'
 declare module 'react-facebook-login'
+declare module 'react-responsive-modal'
+declare module '@material-ui/core'
+
+declare module 'styled-components'
+declare module 'react-simple-chatbot'

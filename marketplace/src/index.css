@@ -4,6 +4,7 @@ body {
   font-family: sans-serif;  
   min-height: 100%;
   height: 100vh;
+  background: #f5f5f5;
 }
 
 .kep-login-facebook.metro{
@@ -11,7 +12,7 @@ body {
 }
 #outlined-full-width{
   font-size: 15px !important;
-  background-color: white;
+  background-color: #f5f5f5;
 }
 
 .MuiPrivateNotchedOutline-root-37{
@@ -29,4 +30,24 @@ body {
 
 .MuiFormControl-marginNormal-32{
   margin-top: 5px !important;
+}
+
+.navbar-inverse .navbar-nav>li>a{
+  color: #ff9800 !important;
+}
+.navbar-brand{
+  padding: 5px 5px !important;
+}
+
+.kyiypa{
+  position: fixed !important;
+  height: 520px !important;
+  bottom: 0 !important;
+  right: 0 !important;
+}
+
+#chatbutton{
+  position: fixed;
+  bottom: 4% !important;
+  right: 3% !important;
 }

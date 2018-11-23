@@ -2,7 +2,7 @@ import * as React from 'react';
 import MediaStreamRecorder from 'msr';
 import { TextField, Button } from '@material-ui/core'
 import { withStyles, MuiThemeProvider, createMuiTheme }from '@material-ui/core/styles';
-import { Mic } from '@material-ui/icons'
+import {Mic} from '@material-ui/icons'
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import orange from '@material-ui/core/colors/orange'
@@ -57,7 +57,7 @@ class SearchBar extends React.Component<HeaderInfoProps, IState>{
 
     public render() {
         return (
-            <div className="container">
+            <div className="container" style={{display:'flex', alignItems:'center', marginTop:'55px'}}>
                 <TextField
                     className={this.props.classes.resize}
                     id="outlined-full-width"
@@ -79,7 +79,7 @@ class SearchBar extends React.Component<HeaderInfoProps, IState>{
                     }}
                 />
                 <MuiThemeProvider theme={theme}>
-                    <Button variant="contained" color="primary" className={this.props.classes.margin} style={{borderRadius:'20px', width:'15%',height:'40px',marginTop:'5px',marginLeft:'15px'}} onClick={this.makeRequest}>
+                    <Button variant="contained" color="primary" className={this.props.classes.margin} style={{fontSize:'15px',borderRadius:'50px', width:'20%',height:'40px',marginLeft:'10px', fontWeight:"400"}} onClick={this.makeRequest}>
                         Search
                     </Button>
                 </MuiThemeProvider>

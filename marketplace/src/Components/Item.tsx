@@ -1,4 +1,4 @@
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -8,19 +8,27 @@ import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import Modal from 'react-responsive-modal'
 import { Col } from 'react-bootstrap';
-import { CardActionArea } from '@material-ui/core';
-
+import DeleteIcon from '@material-ui/icons/Delete';
+import orange from '@material-ui/core/colors/orange'
 
 const styles = {
   card: {
     margin: 10,
   },
   media: {
-    maxHeight: 250,
+    height: 250,
 
   },
-
 };
+
+const theme = createMuiTheme({
+  palette: {
+    primary: orange,
+  },
+  typography: {
+    fontSize: 15,
+  },
+})
 
 interface IHeaderInfoStyles {
   classes: any,
@@ -75,14 +83,15 @@ class MarketItem extends React.Component<HeaderInfoProps, IState> {
 
   public decide = () => {
     if (this.props.obj.userId == this.props.isItemMine) {
-      return (<div>
-        <Button size="medium" color="primary" onClick={this.callDelete}>
-          Delete
-        </Button>
-        <Button size="medium" color="primary" onClick={this.callEdit}>
-          Edit
-        </Button>
-      </div>)
+      let ar=[]
+      ar.push(<Button className='buttonCards' size="medium" variant='contained'color="primary" onClick={this.callDelete}>
+      Delete
+      <DeleteIcon className={this.props.classes.rightIcon} />
+    </Button>)
+    ar.push(<Button  variant='contained' className='buttonCards' size="medium" color="primary" onClick={this.callEdit}>
+    Edit
+  </Button>)
+      return (ar)
     }
     return
   }
@@ -99,53 +108,61 @@ class MarketItem extends React.Component<HeaderInfoProps, IState> {
     return (
       <div>
         <Col lg={3} md={4} sm={6} xs={12}>
-          <Card className={this.props.classes.card} raised={true}>
-            <CardActionArea>
-              <CardMedia
-                component="img"
-                className={this.props.classes.media}
-                image={this.props.obj.url}
-                title="Contemplative Reptile"
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
-                  {this.props.obj.title}
-                </Typography>
-                <Typography component="p">
-                  {this.props.obj.description}
-                </Typography>
-                <Typography gutterBottom variant="h5" component="h1">
-                  <br /> Contact email: {this.props.obj.email} <br />Name: {this.props.obj.seller}
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button size="medium" color="primary" onClick={this.handleClick}>
-                  Learn More
-              </Button>
-                {this.decide()}
-              </CardActions>
-            </CardActionArea>
-          </Card>
-        </Col>
-        <Modal open={this.state.open} onClose={this.onCloseModal}>
-          <Card className={this.props.classes.card}>
+          <Card style={{ height: '420px' }} className={this.props.classes.card} raised={true}>
             <CardMedia
               component="img"
               className={this.props.classes.media}
               image={this.props.obj.url}
-              title="Contemplative Reptile"
+              title="Listing"
             />
             <CardContent>
-              <Typography gutterBottom variant="h5" component="h2">
-                My Listing Info
-            </Typography>
-              <Typography component="p">
+              <Typography gutterBottom variant="h4" component="h4">
+                {this.props.obj.title}
+              </Typography>
+              <br/>
+              <Typography gutterBottom variant="h5" component="h5">
+                Price: ${this.props.obj.price}
+              </Typography>
+            </CardContent>
+            <MuiThemeProvider theme={theme}>
+            <CardActions style={{ position: "relative", bottom: '0', left: '5' }}>
+              <Button size="medium" className='buttonCards' variant='contained' color="primary" onClick={this.handleClick}>
+                Learn More
+                </Button>
+              {this.decide()}
+            </CardActions>
+            </MuiThemeProvider>
+          </Card>
+        </Col>
+        <Modal open={this.state.open} onClose={this.onCloseModal}>
+        <Card className={this.props.classes.card} raised={true}>
+            <CardMedia
+              component="img"
+              className={this.props.classes.media}
+              image={this.props.obj.url}
+              title="Listing"
+            />
+            <CardContent>
+            <Typography gutterBottom variant="h4" component="h4">
+                {this.props.obj.title}
+              </Typography>
+              <br/>
+              <Typography gutterBottom variant="h5" component="h5">
+                Price: ${this.props.obj.price}
+              </Typography>
+              <br/>
+              <Typography gutterBottom variant="h5" component="h5">
                 {this.props.obj.description}
               </Typography>
-              <CardActionArea>
-                {this.decide()}
-              </CardActionArea>
+              <Typography gutterBottom variant="h5" component="h1">
+                <br /> Contact email: {this.props.obj.email} <br />Name: {this.props.obj.seller}
+              </Typography>
             </CardContent>
+            <MuiThemeProvider theme={theme}>
+            <CardActions style={{ position: "relative", bottom: '0', left: '5' }}>
+              {this.decide()}
+            </CardActions>
+            </MuiThemeProvider>
           </Card>
         </Modal>
         <Modal open={this.state.edit} onClose={this.closeEdit}>
@@ -193,6 +210,12 @@ class MarketItem extends React.Component<HeaderInfoProps, IState> {
   private updateListing() {
     const url = "https://mpapii.azurewebsites.net/api/Listing/" + this.props.obj.id
     const currentListing = this.props.obj
+    const ourState=this.state
+
+    if(ourState.title === null || ourState.description === null || ourState.price === null){
+      return
+    }
+    
     fetch(url, {
       body: JSON.stringify({
         "id": currentListing.id,
@@ -213,7 +236,7 @@ class MarketItem extends React.Component<HeaderInfoProps, IState> {
           // Error State
           alert(response.statusText + " " + url)
         } else {
-          this.setState({edit:false})
+          this.setState({ edit: false })
         }
       })
   }

@@ -316,10 +316,10 @@ class App extends React.Component<{}, IState>{
           alert(response.statusText)
         } else {
           this.setState({ createmode: false })
+          this.makeItems();
         }
       })
     this.setState({ uploadimage: [] })
-    this.makeItems();
   }
 
   private normalView() {
@@ -363,15 +363,15 @@ class App extends React.Component<{}, IState>{
       })
 
   }
-  public makeItems(): any {
+  public makeItems(){
     if (this.state.isSearchTitle) {
       this.searchListings()
     }
     else if (this.state.isSearchUser) {
-      return this.userSearchListings()
+      this.userSearchListings()
     }
     else {
-      return this.generateAllListing();
+      this.generateAllListing();
     };
   }
 

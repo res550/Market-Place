@@ -110,6 +110,7 @@ interface IState {
   search: any,
   selectedObj: any,
   chatbot: boolean,
+  render:boolean,
 }
 class App extends React.Component<{}, IState>{
 
@@ -132,6 +133,8 @@ class App extends React.Component<{}, IState>{
       uploadimage: null,
       selectedObj: "",
       chatbot: false,
+      render:true,
+
     }
     this.launchScreen = this.launchScreen.bind(this)
     this.generateAllListing = this.generateAllListing.bind(this)
@@ -158,16 +161,17 @@ class App extends React.Component<{}, IState>{
 
   public setDisplayListing = (searchQuery: any) => {
     this.setState({
+      render:false,
       search: searchQuery,
       isSearchTitle: true,
     }, () =>{
-      this.render()
+      this.setState({render:true})
     })
   }
 
   public searchoff = () => {
-    this.setState({ isSearchTitle: false }, () =>{
-      this.render()
+    this.setState({ isSearchTitle: false,render:false }, () =>{
+      this.setState({render:true})
     })
   }
 
@@ -179,13 +183,13 @@ class App extends React.Component<{}, IState>{
 
   public userOnlyFunc = () => {
     if (this.state.isSearchUser === false) {
-      this.setState({ isSearchUser: true }, () =>{
-        this.render()
+      this.setState({ isSearchUser: true,render:false }, () =>{
+        this.setState({render:true})
       })
     }
     else {
-      this.setState({ isSearchUser: false }, () =>{
-        this.render()
+      this.setState({ isSearchUser: false,render:false }, () =>{
+        this.setState({render:true})
       })
     }
   }
@@ -354,6 +358,9 @@ class App extends React.Component<{}, IState>{
     return returning
   }
   public makeItems(): any {
+    if(!this.state.render){
+      return(<h1>Loading</h1>)
+    }
     if (this.state.isSearchTitle) {
       return this.searchListings()
     }

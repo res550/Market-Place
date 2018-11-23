@@ -387,6 +387,7 @@ class App extends React.Component<{}, IState>{
           alert(response.statusText)
         }
         else {
+          this.makeItems();
         }
       })
   }

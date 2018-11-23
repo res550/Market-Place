@@ -319,6 +319,7 @@ class App extends React.Component<{}, IState>{
         }
       })
     this.setState({ uploadimage: [] })
+    this.makeItems();
   }
 
   private normalView() {

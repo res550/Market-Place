@@ -9,7 +9,7 @@ import Modal from 'react-responsive-modal'
 import Logo from './Components/LogoMakr_9MVTxW.png'
 import ChatBot from 'react-simple-chatbot'
 import { ThemeProvider } from 'styled-components'
-import { MuiThemeProvider, createMuiTheme }from '@material-ui/core/styles';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Speech from '@material-ui/icons/ChatBubble'
 import orange from '@material-ui/core/colors/orange'
@@ -110,7 +110,8 @@ interface IState {
   search: any,
   selectedObj: any,
   chatbot: boolean,
-  render:boolean,
+  render: boolean,
+  copy: any[],
 }
 class App extends React.Component<{}, IState>{
 
@@ -133,8 +134,8 @@ class App extends React.Component<{}, IState>{
       uploadimage: null,
       selectedObj: "",
       chatbot: false,
-      render:true,
-
+      render: true,
+      copy: []
     }
     this.launchScreen = this.launchScreen.bind(this)
     this.generateAllListing = this.generateAllListing.bind(this)
@@ -161,17 +162,16 @@ class App extends React.Component<{}, IState>{
 
   public setDisplayListing = (searchQuery: any) => {
     this.setState({
-      render:false,
       search: searchQuery,
       isSearchTitle: true,
-    }, () =>{
-      this.setState({render:true})
+    }, () => {
+      this.makeItems();
     })
   }
 
   public searchoff = () => {
-    this.setState({ isSearchTitle: false,render:false }, () =>{
-      this.setState({render:true})
+    this.setState({ isSearchTitle: false}, () => {
+      this.makeItems();
     })
   }
 
@@ -183,13 +183,13 @@ class App extends React.Component<{}, IState>{
 
   public userOnlyFunc = () => {
     if (this.state.isSearchUser === false) {
-      this.setState({ isSearchUser: true,render:false }, () =>{
-        this.setState({render:true})
+      this.setState({ isSearchUser: true }, () => {
+        this.makeItems();
       })
     }
     else {
-      this.setState({ isSearchUser: false,render:false }, () =>{
-        this.setState({render:true})
+      this.setState({ isSearchUser: false}, () => {
+        this.makeItems();
       })
     }
   }
@@ -204,6 +204,8 @@ class App extends React.Component<{}, IState>{
         picture: response.picture.data.url,
         email: response.email,
         id: response.id
+      }, () => {
+        this.makeItems();
       })
     }
   }
@@ -279,7 +281,7 @@ class App extends React.Component<{}, IState>{
   }
 
   private uploadListing() {
-    if(this.state.uploadimage === null){
+    if (this.state.uploadimage === null) {
       return
     }
     const titleInput = document.getElementById("Title") as HTMLInputElement
@@ -317,7 +319,7 @@ class App extends React.Component<{}, IState>{
           this.setState({ createmode: false })
         }
       })
-      this.setState({uploadimage:[]})
+    this.setState({ uploadimage: [] })
   }
 
   private normalView() {
@@ -326,16 +328,16 @@ class App extends React.Component<{}, IState>{
         <Header name={this.state.name} imageurl={this.state.picture} createClicked={this.createClicked} userOnly={this.state.userOnly}
           userOnlyFunc={this.userOnlyFunc} />
         <SearchBar changeSearch={this.setDisplayListing} searchOff={this.searchoff} />
-        {this.makeItems()}
+        {this.state.copy}
         {this.createModal()}
         {(this.state.chatbot)
           ? <ThemeProvider theme={theme}>
             <ChatBot handleEnd={() => this.setState({ chatbot: false })} className="chatBot" botDelay={400} steps={steps} />
           </ThemeProvider> :
           <MuiThemeProvider theme={themeButton}>
-          <Button id="chatbutton" style={{backgroundColor:'orange'}} variant="fab" onClick={() => this.setState({ chatbot: true })}>
-            <Speech style={{color:'white'}} />
-          </Button>
+            <Button id="chatbutton" style={{ backgroundColor: 'orange' }} variant="fab" onClick={() => this.setState({ chatbot: true })}>
+              <Speech style={{ color: 'white' }} />
+            </Button>
           </MuiThemeProvider>}
       </div>
     )
@@ -349,20 +351,21 @@ class App extends React.Component<{}, IState>{
       })
       .then(response => response.json())
       .then(json => {
-        this.setState({ allResponse: json });
+        this.setState({ allResponse: json }, () => {
+          let returning: any[] = []
+          this.state.allResponse.forEach(i => {
+            returning.push(<Item deleteClicked={this.deleteClicked} isItemMine={this.state.id} obj={i} />)
+          })
+          this.setState({
+            copy: returning
+          })
+        });
       })
-    let returning: any[] = []
-    this.state.allResponse.forEach(i => {
-      returning.push(<Item deleteClicked={this.deleteClicked} isItemMine={this.state.id} obj={i} />)
-    })
-    return returning
+
   }
   public makeItems(): any {
-    if(!this.state.render){
-      return(<h1>Loading</h1>)
-    }
     if (this.state.isSearchTitle) {
-      return this.searchListings()
+      this.searchListings()
     }
     else if (this.state.isSearchUser) {
       return this.userSearchListings()
@@ -389,42 +392,36 @@ class App extends React.Component<{}, IState>{
   }
 
   private searchListings() {
+
+    let url;
     if (this.state.isSearchUser) {
-      let results: any[] = [];
-      const url = "https://mpapii.azurewebsites.net/api/Listing/search/titleID/" + encodeURIComponent(this.state.search.trim()) + "/" + this.state.id
-      fetch(
-        url, {
-          method: 'GET'
-        })
-        .then(response => response.json())
-        .then(json => {
-          this.setState({ allResponse: json })
-        })
-      this.state.allResponse.forEach(element => {
-        results.push(<Item deleteClicked={this.deleteClicked} isItemMine={this.state.id} obj={element} />)
-      });
-      return results;
+      url = "https://mpapii.azurewebsites.net/api/Listing/search/titleID/" + encodeURIComponent(this.state.search.trim()) + "/" + this.state.id
     }
     else {
-      let results: any[] = [];
-      const url = "https://mpapii.azurewebsites.net/api/Listing/search/title/" + encodeURIComponent(this.state.search.trim())
-      fetch(
-        url, {
-          method: 'GET'
-        })
-        .then(response => response.json())
-        .then(json => {
-          this.setState({ allResponse: json })
-        })
-      this.state.allResponse.forEach(element => {
-        results.push(<Item deleteClicked={this.deleteClicked} isItemMine={this.state.id} obj={element} />)
-      });
-      return results;
+      url = "https://mpapii.azurewebsites.net/api/Listing/search/title/" + encodeURIComponent(this.state.search.trim())
     }
+
+    fetch(
+      url, {
+        method: 'GET'
+      })
+      .then(response => response.json())
+      .then(json => {
+        this.setState({ allResponse: json }, () => {
+          let results: any[] = [];
+          this.state.allResponse.forEach(element => {
+            results.push(<Item deleteClicked={this.deleteClicked} isItemMine={this.state.id} obj={element} />)
+          });
+          this.setState({
+            copy: results
+          })
+        }
+        )
+      })
+
   }
 
   private userSearchListings() {
-    let results: any[] = [];
     const url = "https://mpapii.azurewebsites.net/api/Listing/search/userId/" + this.state.id
     fetch(
       url, {
@@ -432,12 +429,21 @@ class App extends React.Component<{}, IState>{
       })
       .then(response => response.json())
       .then(json => {
-        this.setState({ allResponse: json })
+        this.setState({ allResponse: json }, () => {
+          let results: any[] = [];
+
+          this.state.allResponse.forEach(element => {
+            results.push(<Item deleteClicked={this.deleteClicked} isItemMine={this.state.id} obj={element} />)
+          });
+          
+          this.setState({
+            copy: results
+          })
+
+        })
       })
-    this.state.allResponse.forEach(element => {
-      results.push(<Item deleteClicked={this.deleteClicked} isItemMine={this.state.id} obj={element} />)
-    });
-    return results;
+
+
   }
 }
 

@@ -253,8 +253,7 @@ class App extends React.Component<{}, IState>{
           </div>
           <div className="form-group">
             <label></label>
-            <input type="text" className="form-control" id="Description" placeholder="Enter Tag" />
-            <big className="form-text text-muted">Tag is used for search</big>
+            <input type="text" className="form-control" id="Description" placeholder="Enter Description please" />
           </div>
           <div className="form-group">
             <label>Image</label>
